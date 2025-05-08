@@ -18,6 +18,9 @@ import NominationForm from './components/NominationForm';
 import Footer from './components/Footer';
 import LoadingAnimation from './components/LoadingAnimation';
 import SEO from './components/SEO';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AdminLogin from './components/AdminLogin';
+import AdminDashboard from './components/AdminDashboard';
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -40,30 +43,52 @@ const App: React.FC = (): JSX.Element => {
       />
       <ParallaxProvider>
         <GlobalStyles />
-        <AppContainer>
-          {isLoading ? (
-            <LoadingAnimation onComplete={handleLoadingComplete} />
-          ) : (
-            <>
-              <Navigation />
-              <HeroSection id="hero" />
-              <AboutSection id="about" />
-              <WhyNowSection id="why-now" />
-              <NomineesSection id="nominees" />
-              <DifferenceSection id="difference" />
-              <EventNightSection id="event-night" />
-              <JurySection id="jury" />
-              <GuestsSection id="guests" />
-              <AdvisoryBoardSection id="advisory-board" />
-              <SponsorsSection id="sponsors" />
-              <NominationForm id="nominate" />
-              <Footer id="footer" />
-            </>
-          )}
-        </AppContainer>
+        <Router>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Navigation />
+                <AppContainer>
+                  {isLoading ? (
+                    <LoadingAnimation onComplete={handleLoadingComplete} />
+                  ) : (
+                    <>
+                      <HeroSection id="hero" />
+                      <AboutSection id="about" />
+                      <WhyNowSection id="why-now" />
+                      <NomineesSection id="nominees" />
+                      <DifferenceSection id="difference" />
+                      <EventNightSection id="event-night" />
+                      <JurySection id="jury" />
+                      <GuestsSection id="guests" />
+                      <AdvisoryBoardSection id="advisory-board" />
+                      <SponsorsSection id="sponsors" />
+                      <NominationForm id="nominate" />
+                      <Footer id="footer" />
+                    </>
+                  )}
+                </AppContainer>
+              </>
+            } />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route 
+              path="/admin/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </Router>
       </ParallaxProvider>
     </HelmetProvider>
   );
+};
+
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('adminAuthenticated') === 'true';
+  return isAuthenticated ? <>{children}</> : <Navigate to="/admin/login" />;
 };
 
 export default App; 

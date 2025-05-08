@@ -17,6 +17,7 @@ const HeroContainer = styled.section`
   background: var(--primary-color);
   position: relative;
   overflow: hidden;
+  perspective: 1000px;
 `;
 
 const HeroContent = styled(motion.div)`
@@ -35,30 +36,34 @@ const HeroContent = styled(motion.div)`
 
 const Title = styled(motion.h1)`
   font-size: 4.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   color: var(--secondary-color);
   text-shadow: 0 0 10px var(--accent-color);
-  line-height: 1.2;
+  line-height: 1.4;
   font-weight: 700;
   letter-spacing: -0.02em;
 
   @media (max-width: 768px) {
     font-size: 3rem;
+    margin-bottom: 2rem;
   }
 `;
 
 const Subtitle = styled(motion.p)`
   font-size: 1.5rem;
-  line-height: 1.8;
-  margin-bottom: 2rem;
+  line-height: 2;
+  margin-bottom: 3rem;
   max-width: 800px;
   opacity: 0.9;
   color: var(--secondary-color);
   text-shadow: 0 0 5px var(--accent-color);
   font-weight: 400;
+  letter-spacing: 0.02em;
 
   @media (max-width: 768px) {
     font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
   }
 `;
 
@@ -94,28 +99,32 @@ const ParallaxLayer = styled(Parallax)`
   width: 100%;
   height: 100%;
   z-index: 1;
+  transform-style: preserve-3d;
 `;
 
 const CharminarImage = styled.img`
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 1200px;
+  transform: translateX(-50%) translateZ(-100px);
+  width: 120%;
+  max-width: 1400px;
   height: auto;
   object-fit: contain;
   filter: brightness(0.7) contrast(1.2) saturate(1.1);
   mix-blend-mode: luminosity;
+  will-change: transform;
 `;
 
 const BackgroundImage = styled.img`
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 120%;
+  height: 120%;
   object-fit: cover;
   opacity: 0.4;
   filter: brightness(0.6) contrast(1.1);
+  transform: translateZ(-200px);
+  will-change: transform;
 `;
 
 const Overlay = styled.div`
@@ -170,7 +179,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
       />
       <HeroContainer id={id} ref={ref}>
         {/* Background layer with city lights */}
-        <ParallaxLayer speed={-30}>
+        <ParallaxLayer speed={-50}>
           <BackgroundImage 
             src="https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&q=80"
             alt="Hyderabad city lights"
@@ -178,7 +187,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
         </ParallaxLayer>
 
         {/* Middle layer with Charminar */}
-        <ParallaxLayer speed={-15}>
+        <ParallaxLayer speed={-30}>
           <CharminarImage 
             src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&q=80"
             alt="Charminar monument"
@@ -186,7 +195,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
         </ParallaxLayer>
 
         {/* Decorative elements */}
-        <ParallaxLayer speed={-10}>
+        <ParallaxLayer speed={-20}>
           <DecorativeElement 
             position="bottom"
             style={{
@@ -195,7 +204,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
           />
         </ParallaxLayer>
 
-        <ParallaxLayer speed={-12}>
+        <ParallaxLayer speed={-25}>
           <DecorativeElement 
             position="top"
             style={{
@@ -211,7 +220,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
         >
-          <Parallax speed={-8}>
+          <Parallax speed={-15}>
             <Title
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -220,7 +229,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
               A city isn't built by stone. It's built by spirit.
             </Title>
           </Parallax>
-          <Parallax speed={-5}>
+          <Parallax speed={-10}>
             <Subtitle
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -230,7 +239,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ id }): JSX.Element => {
               We're not just recognizing them — we're giving them a stage, a spotlight, a standing ovation.
             </Subtitle>
           </Parallax>
-          <Parallax speed={-3}>
+          <Parallax speed={-5}>
             <CTAButton
               href="#nominate"
               onClick={scrollToForm}

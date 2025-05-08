@@ -14,6 +14,7 @@ const NomineesContainer = styled.section`
   background: var(--background-color);
   position: relative;
   overflow: hidden;
+  perspective: 1000px;
 
   @media (max-width: 768px) {
     padding: 3rem 1rem;
@@ -27,63 +28,83 @@ const NomineesContent = styled(motion.div)`
   color: var(--text-color);
   position: relative;
   z-index: 2;
+  transform-style: preserve-3d;
 `;
 
 const Title = styled(motion.h2)`
   font-size: 3.5rem;
-  margin-bottom: 2rem;
-  color: var(--primary-color);
-  text-shadow: 0 0 10px var(--accent-color);
+  margin-bottom: 3rem;
+  color: #000000;
+  text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
+    margin-bottom: 2.5rem;
   }
 `;
 
 const Description = styled(motion.p)`
   font-size: 1.2rem;
-  line-height: 1.8;
-  margin-bottom: 2rem;
+  line-height: 2;
+  margin-bottom: 3rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  color: #000000;
   opacity: 0.9;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 
   @media (max-width: 768px) {
     font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
   }
 `;
 
 const CriteriaGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  gap: 3rem;
   margin-top: 4rem;
 `;
 
 const CriteriaCard = styled(motion.div)`
-  background: var(--primary-color);
-  padding: 2rem;
-  border-radius: 10px;
-  color: var(--secondary-color);
-  text-align: left;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
+  will-change: transform;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 
   &:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px) scale(1.02);
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 `;
 
 const CriteriaTitle = styled.h3`
   font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--accent-color);
+  margin-bottom: 1.5rem;
+  color: #000000;
+  text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
 `;
 
 const CriteriaText = styled.p`
   font-size: 1rem;
-  opacity: 0.8;
+  color: #000000;
+  opacity: 0.9;
+  font-weight: 500;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
 `;
 
 const ParallaxBackground = styled(Parallax)`
@@ -93,7 +114,7 @@ const ParallaxBackground = styled(Parallax)`
   width: 100%;
   height: 100%;
   z-index: 1;
-  opacity: 0.1;
+  transform-style: preserve-3d;
 `;
 
 const NomineesSection: React.FC<NomineesSectionProps> = ({ id }): JSX.Element => {
@@ -123,12 +144,14 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ id }): JSX.Element =>
 
   return (
     <NomineesContainer id={id} ref={ref}>
-      <ParallaxBackground speed={-20}>
+      <ParallaxBackground speed={-40}>
         <div style={{ 
-          width: '100%', 
-          height: '100%', 
+          width: '120%', 
+          height: '120%', 
           background: 'linear-gradient(45deg, var(--accent-color) 25%, transparent 25%, transparent 75%, var(--accent-color) 75%, var(--accent-color))',
-          backgroundSize: '60px 60px'
+          backgroundSize: '60px 60px',
+          transform: 'translateZ(-100px)',
+          opacity: 0.1
         }} />
       </ParallaxBackground>
       <NomineesContent
@@ -136,7 +159,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ id }): JSX.Element =>
         animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{ duration: 0.8 }}
       >
-        <Parallax speed={-5}>
+        <Parallax speed={-20}>
           <Title
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -145,7 +168,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ id }): JSX.Element =>
             Who Gets Nominated?
           </Title>
         </Parallax>
-        <Parallax speed={-3}>
+        <Parallax speed={-15}>
           <Description
             initial={{ opacity: 0, y: 30 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -162,11 +185,13 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ id }): JSX.Element =>
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           {criteriaData.map((item, index) => (
-            <Parallax key={index} speed={-2 + index * 2}>
+            <Parallax key={index} speed={-10 + index * 5}>
               <CriteriaCard
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.8, delay: 0.8 + index * 0.1 }}
+                style={{ transform: `translateZ(${index * 20}px)` }}
+                whileHover={{ scale: 1.05, y: -10 }}
               >
                 <CriteriaTitle>{item.title}</CriteriaTitle>
                 <CriteriaText>{item.text}</CriteriaText>
