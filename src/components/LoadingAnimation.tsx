@@ -6,7 +6,7 @@ interface LoadingAnimationProps {
   onComplete: () => void;
 }
 
-const LoadingContainer = styled.div`
+const LoadingContainer = styled(motion.div)`
   position: fixed;
   top: 0;
   left: 0;
@@ -77,26 +77,33 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }): JSX.
 
   useEffect(() => {
     if (stage === 'intro') {
-      // Intro stage
-      const wordTimer = setTimeout(() => {
-        if (currentWord < words.length - 1) {
-          setCurrentWord(prev => prev + 1);
-        } else {
-          onComplete();
-        }
-      }, 1000);
+      const wordTimers = words.map((_, index) => {
+        return setTimeout(() => {
+          setCurrentWord(index);
+        }, index * 1000);
+      });
 
-      return () => clearTimeout(wordTimer);
+      // Set final timer to call onComplete
+      const finalTimer = setTimeout(() => {
+        onComplete();
+      }, words.length * 1000);
+
+      return () => {
+        wordTimers.forEach(timer => clearTimeout(timer));
+        clearTimeout(finalTimer);
+      };
     }
-  }, [stage, currentWord, onComplete]);
+  }, [stage, onComplete]);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {stage === 'loading' ? (
         <LoadingContainer
+          key="loading"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
         >
           <Spinner
             animate={{ rotate: 360 }}
@@ -112,9 +119,11 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }): JSX.
         </LoadingContainer>
       ) : (
         <IntroContainer
+          key="intro"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.5 }}
         >
           {words.map((word, index) => (
             <IntroText
@@ -125,7 +134,7 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }): JSX.
                 opacity: currentWord >= index ? 1 : 0,
               }}
               exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
             >
               {word}
             </IntroText>
